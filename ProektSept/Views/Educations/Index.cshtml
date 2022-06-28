@@ -1,0 +1,202 @@
+﻿@model IEnumerable<ProektSept.Models.Education>
+
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    if (Session["budget1"] == null)
+    {
+        <div style="margin-left:800px; padding-top:50px; position:absolute; top:80px; color:darkcyan">
+            @Html.Label("Add your Budget:")
+            @using (Html.BeginForm("AddBudget", "Educations"))
+            {
+                <input type="text" name="budget" />
+                <input type="submit" />
+            }
+        </div>
+        <img id="blinkeffect" src="~/Images/arrow.png" style="width:80px;height:80px; position:absolute; right:600px; top:200px;" />
+    }
+    else
+    {
+        <div style="margin-left:800px; padding-top:50px; position:absolute; top:80px; color:darkcyan">
+            @Html.Label("Change your Budget:")
+            @using (Html.BeginForm("AddBudget", "Educations"))
+            {
+                <input type="text" name="budget" />
+                <input type="submit" />
+            }
+        </div>
+    }
+}
+
+<br />
+<br />
+<br />
+<h2 style="color:darkcyan;margin-bottom:30px;margin-top:30px;font-family:Georgia, 'Times New Roman', Times, serif;text-decoration:underline;">Education</h2>
+<img src="~/Images/education.jpg" ; style="height:80px; width:80px; position:absolute; top:120px; right:540px;" />
+@{
+    if (Session["budget1"] != null)
+    {
+        <div class="col-md-6">
+
+            <div>
+                <canvas id="myBarChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    }
+}
+
+@{
+    if (Session["budget1"] == null)
+    {
+        <br />
+        <br />
+        <br />
+        <p><b style="font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif; font-size: 20px; color: darkcyan; border: solid 1px; border-color: darkblue; background-color: aliceblue; padding: 10px;">Enter your budget to start!</b></p>
+    }
+    else if (Session["budget1"] != null)
+    {
+        <div style="border: solid 1px; border-color: blueviolet; background-color: beige; padding: 10px; text-align: left; float: right; margin-right: 100px; margin-top: 50px;">
+            @{
+                <p>
+                    <b style=" color:dimgray; font-size: 15px;margin-top:20px;">Starting budget: @Session["budget1"] $</b>
+                </p>
+                var count = 0;
+                foreach (var item in Model)
+                {
+                    count = count + item.Price;
+                }
+                string money = count.ToString();
+                <p><b style=" color: dimgrey; font-size: 15px;margin-top:20px;">Total money spent: @money $</b></p>
+
+
+
+                //Converting your session variable value to integer
+                int leftover = Convert.ToInt32(Session["budget1"]) - count;
+                //<b style="padding: 5px; color: dimgrey; font-size: 15px;margin-top:20px;"> Your budget now:</b> @leftover <b>$</b>
+                double stotka = 100.0;
+                double procent = stotka / (Convert.ToInt32(Session["budget1"]));
+                //<p><b>Procent:</b>@procent</p>
+                double proc = procent * count;
+                if (proc <= 50)
+                {
+                    <b style="color: dimgray; font-size: 15px;margin-top:20px;"> Your budget now: @leftover $</b>
+                    <br />
+                    <br />
+                    <b style="padding: 5px; color: green; font-size: 15px;margin-top:20px; font-size:15px;">You've spent @String.Format("{0:#,0.00}", proc)  % of your budget! </b>
+                }
+                else if (proc > 50 && proc < 85)
+                {
+                    <b style=" color: dimgrey; font-size: 15px;margin-top:20px;"> Your budget now: @leftover $</b>
+                    <br />
+                    <br />
+                    <b style=" padding: 5px; color: orangered; font-size: 15px; margin-top: 20px; font-size: 15px;">You've spent @String.Format("{0:#,0.00}", proc)  % of your budget! </b>
+                }
+                else if (proc >= 85 && proc < 100)
+                {
+                    <b style=" color: dimgrey; font-size: 15px;margin-top:20px;"> Your budget now: @leftover $</b>
+                    <br />
+                    <br />
+                    <b style="padding: 5px; color: red; font-size: 15px; margin-top: 20px; font-size: 15px;">You've spent @String.Format("{0:#,0.00}", proc)  % of your budget! </b>
+                }
+                else if (proc >= 100)
+                {
+                    <b style="padding: 5px; color: darkred; font-size: 15px; margin-top: 20px; font-size: 15px;"> Your have spent your budget.</b>
+
+                }
+
+
+
+            }
+        </div>
+    } }
+<br />
+<br />
+@{
+    if (Session["budget1"] != null)
+    {
+        <table class="table" style="border:solid 1px; border-color:cornflowerblue; ">
+            <tr style="background-color: lightsteelblue;">
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Month)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Month)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+
+        </table>
+
+        <p>
+            <span style="background-color: lightblue; border: solid; border-color: darkslategrey; border-width: 1px; padding: 5px;border-radius:5px 5px; margin-bottom:30px; color:darkslategrey;"> @Html.ActionLink("Add New Expense", "Create")</span>
+
+        </p>
+    }
+}
+<br />
+<br />
+<br />
+
+@section Scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/Blinking.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var bc = document.getElementById("myBarChart");
+            var option = {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            };
+            var myBarChart = new Chart(bc, {
+
+                type: 'bar',
+                data: {
+                    labels: ["Bills&Fees", "Food&Drinks", "Shopping","Education","Travel","Transport"],
+                    datasets: [{
+                        label: "Your starting budgets",
+                        backgroundColor: "rgba(241, 169, 160, 0.4)",
+                        borderColor: "rgba(240, 52, 52, 0.6)",
+                        borderWidth: 2,
+                        hoverBackgroundColor: "rgba(241, 169, 160, 0.8)",
+                        hoverBorderColor: "rgba(240, 52, 52, 0.6)",
+                        data: [@Session["budget"], @Session["budget2"], @Session["budget3"],@Session["budget1"],@Session["budget5"],@Session["budget4"]]
+                    }]
+                },
+                options:option
+
+            });
+        });
+
+    </script>
+}
